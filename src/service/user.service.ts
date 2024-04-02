@@ -1,12 +1,12 @@
+import { UserModel, UserData } from '../model/user.model';
 import { omit } from "lodash";
-import { UserModel, UserDocument, UserData } from '../model/user.model';
-import { TypeOf } from 'zod';
+
 
 export async function createUser(data: UserData) {
     try {
-        return await UserModel.create(data);
+        const createdUser =  await UserModel.create(data);
 
-        // return omit(createUser.toJSON(), "password");
+        return omit(createdUser.toJSON(), "password");
     
     } catch (exception: any) {
         throw new Error(exception);
