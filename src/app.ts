@@ -9,6 +9,8 @@ const host = config.get<string | number>('SERVER_HOST');
 
 const app = express();
 
+app.use(express.json());
+
 app.listen(port, async  () => {
     log.info(`App is running on http://${host}:${port}`);
 
