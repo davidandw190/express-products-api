@@ -1,4 +1,3 @@
-import mogoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
 import mongoose from 'mongoose';
@@ -10,6 +9,8 @@ export interface UserDocument extends mongoose.Document {
     address: string,
     createdAt: Date,
     updatedAt: Date,
+
+    comparePassword(candidatePassword: string): Promise<boolean>,
 }
 
 export const userSchema = new mongoose.Schema(
@@ -39,6 +40,12 @@ userSchema.pre("save",  async function (next) {
     
     return next();
 })
+
+userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean>  {
+    const user = this as UserDocument;
+
+    return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+}
 
 export const User = mongoose.model("User", userSchema);
 
