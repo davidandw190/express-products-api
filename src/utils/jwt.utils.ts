@@ -1,40 +1,44 @@
-import jwt from "jsonwebtoken";
-import config from "config";
+import jwt from 'jsonwebtoken';
+import config from 'config';
 import { log } from './logger.utils';
 
 export function signToken(
-    object: Object,
-    keyName: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
-    options?: jwt.SignOptions | undefined
+  object: Object,
+  keyName: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
+  options?: jwt.SignOptions | undefined,
 ) {
-    const signingKey = Buffer.from(config.get<string>(keyName), 'base64').toString('ascii');
-    return jwt.sign(object, signingKey, {
-        ...(options && options),
-        algorithm: 'RS256',
-    });
+  const signingKey = Buffer.from(
+    config.get<string>(keyName),
+    'base64',
+  ).toString('ascii');
+  return jwt.sign(object, signingKey, {
+    ...(options && options),
+    algorithm: 'RS256',
+  });
 }
 
 export function verifyToken(
-    token: string,
-    keyName: "accessTokenPublicKey" | "refreshTokenPublicKey"
+  token: string,
+  keyName: 'accessTokenPublicKey' | 'refreshTokenPublicKey',
 ) {
-    const publicKey = Buffer.from(config.get<string>(keyName), "base64").toString("ascii");
+  const publicKey = Buffer.from(config.get<string>(keyName), 'base64').toString(
+    'ascii',
+  );
 
-    try {
-        const decoded = jwt.verify(token, publicKey);
-        
-        return {
-            valid: true,
-            expired: false,
-            decoded,
-        };
+  try {
+    const decoded = jwt.verify(token, publicKey);
 
-    } catch (exception: any) {
-        log.error(exception);
-        return {
-            valid: false,
-            expired: exception.message.contains("jwt expired"),
-            decoded: null
-        }
-    }
+    return {
+      valid: true,
+      expired: false,
+      decoded,
+    };
+  } catch (exception: any) {
+    log.error(exception);
+    return {
+      valid: false,
+      expired: exception.message.contains('jwt expired'),
+      decoded: null,
+    };
+  }
 }

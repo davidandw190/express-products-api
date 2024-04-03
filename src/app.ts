@@ -11,10 +11,10 @@ const app = express();
 
 app.use(express.json());
 
-app.listen(port, async  () => {
-    log.info(`App is running on http://${host}:${port}`);
+app.listen(port, async () => {
+  log.info(`App is running on http://${host}:${port}`);
 
-    await connect()
+  await connect();
 
-    routes(app);
-})
+  routes(app);
+});
