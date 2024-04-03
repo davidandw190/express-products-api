@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
     "start:build": "tsc",
     "start:dev": "ts-node-dev --respawn --transpile-only src/app.ts"
   },
