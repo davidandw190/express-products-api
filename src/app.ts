@@ -1,7 +1,7 @@
 import express from 'express';
 import config from 'config';
-import { connect } from './utils/connect';
-import { log } from './utils/logger';
+import { connect } from './utils/connect.utils';
+import { log } from './utils/logger.utils';
 import { routes } from './routes';
 
 const port = config.get<number>('SERVER_PORT');

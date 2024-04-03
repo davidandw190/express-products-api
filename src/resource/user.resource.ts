@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { error } from "console";
-import { log } from "../utils/logger";
+import { log } from "../utils/logger.utils";
 import { createUser } from "../service/user.service";
 import { CreateUserData } from "../schema/user.schema";
 
