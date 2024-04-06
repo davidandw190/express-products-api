@@ -1,54 +1,67 @@
 import bcrypt from 'bcrypt';
 import config from 'config';
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
+/**
+ * Represents the data fields for a user.
+ */
 export interface UserData {
   email: string;
   name: string;
   password: string;
-  address: string;
+  address?: string;
 }
 
+/**
+ * Represents a user document with additional mongoose fields.
+ */
 export interface UserDocument extends UserData, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
 
+  /**
+   * Compares provided password with the stored hashed password.
+   * @param candidatePassword The password to compare.
+   * @returns A promise resolving to true if the passwords match, false otherwise.
+   */
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
+
+export interface UserModel extends Model<UserDocument> {}
 
 export const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
-    address: { type: String, required: false },
+    address: { type: String },
   },
   {
     timestamps: true,
   },
 );
 
-userSchema.pre('save', async function (next) {
-  let user = this as UserDocument;
-
-  if (!user.isModified('password')) {
+// Hash password before saving
+userSchema.pre<UserDocument>('save', async function (next) {
+  if (!this.isModified('password')) {
     return next();
   }
 
-  const salt = await bcrypt.genSalt(config.get<number>('SALT_ROUND_FACTOR'));
-  const hash = await bcrypt.hashSync(user.password, salt);
+  const saltRounds = config.get<number>('SALT_ROUND_FACTOR');
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(this.password, salt);
 
-  user.password = hash;
-
-  return next();
+  this.password = hash;
+  next();
 });
 
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string,
-): Promise<boolean> {
-  const user = this as UserDocument;
-
-  return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+/**
+ * Compares provided password with the stored hashed password.
+ * @param candidatePassword The password to compare.
+ * @returns A promise resolving to true if the passwords match, false otherwise.
+ */
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-export const UserModel = mongoose.model<UserDocument>('User', userSchema);
+export const UserModel: UserModel = mongoose.model<UserDocument, UserModel>('User', userSchema);

@@ -1,5 +1,8 @@
 import { TypeOf, object, string } from 'zod';
 
+/**
+ * Schema for creating a new user.
+ */
 export const createUserSchema = object({
   body: object({
     name: string({
@@ -25,6 +28,9 @@ export const createUserSchema = object({
   }),
 });
 
+/**
+ * Represents the type of data expected when creating a new user.
+ */
 export type CreateUserData = Omit<
   TypeOf<typeof createUserSchema>,
   'body.passwordConfirmation'
