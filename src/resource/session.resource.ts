@@ -7,7 +7,7 @@ import config from 'config';
 
 export async function createUserSessionHandler(req: Request, res: Response) {
   // validate user password
-  const authenticatedUser = await validatePassword(req.body);
+  const authenticatedUser = await validatePassword(req.body?.email, req.body?.password);
 
   if (!authenticatedUser) {
     return res.status(401).send('Invalid email or password.');

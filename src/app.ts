@@ -1,6 +1,6 @@
 import express from 'express';
 import config from 'config';
-import { connect } from './utils/connect.utils';
+import { dbConnect } from './utils/db-connect.utils';
 import { log } from './utils/logger.utils';
 import { routes } from './routes';
 
@@ -14,7 +14,7 @@ app.use(express.json());
 app.listen(port, async () => {
   log.info(`App is running on http://${host}:${port}`);
 
-  await connect();
+  await dbConnect();
 
   routes(app);
 });

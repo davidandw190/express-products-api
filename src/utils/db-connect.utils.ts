@@ -7,7 +7,7 @@ import { log } from './logger.utils';
  * @returns A promise that resolves when the connection is successfully established.
  * @throws Error if connection to the database fails.
  */
-export function connect(): Promise<void> {
+export async function dbConnect(): Promise<void> {
   const dbUri = config.get<string>('DB_URI');
 
   return mongoose
