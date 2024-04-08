@@ -1,4 +1,4 @@
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { SessionDocument, SessionModel } from '../model/session.model';
 import { signToken, verifyToken } from '../utils/jwt.utils';
 import { get } from 'lodash';
@@ -47,6 +47,19 @@ export async function reIssueAccessToken({ refreshToken }: { refreshToken: strin
     return accessToken;
   } catch (error) {
     throw new Error('Unable to re-issue access token');
+  }
+}
+
+export async function updateSession(query: FilterQuery<SessionDocument>, data: UpdateQuery<SessionDocument>): Promise<void> {
+  try {
+    const result: UpdateWriteOpResult = await SessionModel.updateOne(query, data);
+
+    if (result.modifiedCount === 0) {
+      throw new Error('Session not found or not updated');
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error('Unable to update session');
   }
 }
 
