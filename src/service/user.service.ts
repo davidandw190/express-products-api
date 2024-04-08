@@ -1,4 +1,4 @@
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, UpdateQuery } from 'mongoose';
 import { UserModel, UserData, UserDocument } from '../model/user.model';
 import { omit } from 'lodash';
 
@@ -12,7 +12,7 @@ export async function createUser(data: UserData): Promise<Omit<UserDocument, 'pa
   try {
     const createdUser = await UserModel.create(data);
 
-    return omit(createdUser.toJSON(), 'password') as Omit<UserDocument, 'password'>;;
+    return omit(createdUser.toJSON(), 'password') as Omit<UserDocument, 'password'>;
   } catch (error) {
     throw new Error('Unable to create user');
   }
@@ -41,6 +41,23 @@ export async function validatePassword(email: string, password: string): Promise
     return omit(user.toJSON(), 'password') as Omit<UserDocument, 'password'>;
   } catch (error) {
     throw new Error('Unable to validate password');
+  }
+}
+
+export async function updateUser(
+  query: FilterQuery<UserDocument>,
+  data: UpdateQuery<UserDocument>,
+): Promise<UserDocument | null> {
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(query, data, { new: true });
+
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+
+    return updatedUser;
+  } catch (error) {
+    throw new Error('Unable to update user');
   }
 }
 
