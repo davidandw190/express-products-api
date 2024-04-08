@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { error } from 'console';
 import { log } from '../utils/logger.utils';
-import { createUser, updateUser } from '../service/user.service';
+import { createUser, deleteUser, updateUser } from '../service/user.service';
 import { CreateUserData, UpdateUserData } from '../schema/user.schema';
 
 export async function createUserHandler(req: Request<{}, {}, CreateUserData['body']>, res: Response) {
@@ -13,7 +13,6 @@ export async function createUserHandler(req: Request<{}, {}, CreateUserData['bod
     return res.status(409).send(exeption);
   }
 }
-
 
 /**
  * Handler for updating a user.
@@ -33,5 +32,22 @@ export async function updateUserHandler(req: Request<{}, {}, UpdateUserData['bod
   } catch (error) {
     log.error(error);
     return res.status(400).send({ error: 'Unable to update user' });
+  }
+}
+
+export async function deleteUserHandler(req: Request<{ id: string }>, res: Response) {
+  try {
+    const userId = req.params.id;
+    const deletionResult = await deleteUser({ _id: userId});
+
+    if (!deletionResult) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+    
+    return res.send({ message: 'User deleted successfully' });
+
+  } catch (error) {
+    log.error(error);
+    return res.status(400).send({ error: 'Unable to delete user' });
   }
 }

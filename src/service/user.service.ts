@@ -44,6 +44,13 @@ export async function validatePassword(email: string, password: string): Promise
   }
 }
 
+/**
+ * Updates a user by query and data.
+ * @param query The query to find the user.
+ * @param data The data to update the user.
+ * @returns A Promise resolving to the updated user document.
+ * @throws Error if there's an error updating the user.
+ */
 export async function updateUser(
   query: FilterQuery<UserDocument>,
   data: UpdateQuery<UserDocument>,
@@ -58,6 +65,26 @@ export async function updateUser(
     return updatedUser;
   } catch (error) {
     throw new Error('Unable to update user');
+  }
+}
+
+/**
+ * Deletes a user by query.
+ * @param query The query to find the user.
+ * @returns A Promise resolving to a boolean indicating if the user was deleted successfully.
+ * @throws Error if there's an error deleting the user.
+ */
+export async function deleteUser(query: FilterQuery<UserDocument>): Promise<boolean> {
+  try {
+    const deletionResult = await UserModel.deleteOne(query);
+
+    if (deletionResult.deletedCount === 0) {
+      throw new Error('User not found');
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error('Unable to delete user');
   }
 }
 
