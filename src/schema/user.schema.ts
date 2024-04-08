@@ -33,19 +33,13 @@ export const createUserSchema = object({
  */
 export const updateUserSchema = object({
   body: object({
-    name: optional(
-      string({
-        required_error: 'Name is required',
-      }),
-    ),
+    id: string({ required_error: 'ID is required' }),
+
+    name: optional(string()),
 
     password: optional(string().min(6, 'Password too short - should be 6 chars minimum')),
 
-    email: optional(
-      string({
-        required_error: 'Email is required',
-      }).email('Not a valid email'),
-    ),
+    email: optional(string().email('Not a valid email')),
 
     address: optional(string()),
   }),
