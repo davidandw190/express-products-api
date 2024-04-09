@@ -1,8 +1,9 @@
 import { Express, Request, Response } from 'express';
-import { createUserHandler, deleteUserHandler, updateUserHandler } from './resource/user.resource';
+import { createUserHandler, deleteUserHandler, getUserHandler, updateUserHandler } from './resource/user.resource';
 import { createUserSchema, updateUserSchema } from './schema/user.schema';
 import { validate } from './middleware/validation.middleware';
-import { getUserSessionsHandler } from './resource/session.resource';
+import { createUserSessionHandler, deleteUserSessionHandler, getUserSessionsHandler } from './resource/session.resource';
+import { updateSession } from './service/session.service';
 
 export function routes(app: Express) {
   // API Versioning
@@ -12,12 +13,15 @@ export function routes(app: Express) {
   app.get('/health', (_: Request, res: Response) => res.sendStatus(200));
 
   // User Routes
+  app.get(`${apiVersion}/users/:userId`, getUserHandler);
   app.post(`${apiVersion}/users`, validate(createUserSchema), createUserHandler);
   app.patch(`${apiVersion}/users/:userId`, validate(updateUserSchema), updateUserHandler);
   app.delete(`${apiVersion}/users/:userId`, deleteUserHandler);
 
   // Session Routes
   app.get(`${apiVersion}/users/:userId/sessions`, getUserSessionsHandler);
+  app.post(`${apiVersion}/users/:userId/sessions`, createUserSessionHandler);
+  app.delete(`${apiVersion}/users/:userId/sessions`, deleteUserSessionHandler);
 
   // Not Found Routes
   app.use((_req, res) => {
