@@ -3,7 +3,7 @@ import { createUserHandler, deleteUserHandler, getUserHandler, updateUserHandler
 import { createUserSchema, updateUserSchema } from './schema/user.schema';
 import { validate } from './middleware/validation.middleware';
 import { createUserSessionHandler, deleteUserSessionHandler, getUserSessionsHandler } from './resource/session.resource';
-import { updateSession } from './service/session.service';
+import { requireUser } from './middleware/require-user.middleware';
 
 export function routes(app: Express) {
   // API Versioning
@@ -19,7 +19,7 @@ export function routes(app: Express) {
   app.delete(`${apiVersion}/users/:userId`, deleteUserHandler);
 
   // Session Routes
-  app.get(`${apiVersion}/users/:userId/sessions`, getUserSessionsHandler);
+  app.get(`${apiVersion}/users/:userId/sessions`, requireUser, getUserSessionsHandler);
   app.post(`${apiVersion}/users/:userId/sessions`, createUserSessionHandler);
   app.delete(`${apiVersion}/users/:userId/sessions`, deleteUserSessionHandler);
 
