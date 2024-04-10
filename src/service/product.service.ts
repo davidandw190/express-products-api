@@ -1,4 +1,4 @@
-import { FilterQuery, QueryOptions, UpdateQuery, UpdateWriteOpResult, DeleteRe } from 'mongoose';
+import { FilterQuery, QueryOptions, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { ProductData, ProductDocument, ProductModel } from '../model/product.model';
 import { log } from '../utils/logger.utils';
 
