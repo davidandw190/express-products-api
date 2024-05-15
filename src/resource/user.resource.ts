@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import { error } from 'console';
-import { log } from '../utils/logger.utils';
-import { createUser, deleteUser, findUser, updateUser } from '../service/user.service';
 import { CreateUserData, UpdateUserData } from '../schema/user.schema';
+import { Request, Response } from 'express';
+import { createUser, deleteUser, findUser, updateUser } from '../service/user.service';
+
+import { log } from '../utils/logger.utils';
 
 export async function createUserHandler(req: Request<{}, {}, CreateUserData['body']>, res: Response) {
   try {

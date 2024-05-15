@@ -1,5 +1,7 @@
 import { FilterQuery, QueryOptions, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { ProductData, ProductDocument, ProductModel } from '../model/product.model';
+
+import { P } from 'pino';
 import { log } from '../utils/logger.utils';
 
 /**
@@ -7,7 +9,7 @@ import { log } from '../utils/logger.utils';
  * @param data The data of the product to be created.
  * @returns A promise resolving to the created product document.
  */
-export async function createProduct(data: ProductData): Promise<ProductDocument> {
+export async function createProduct(data: ProductData): Promise<Omit<ProductDocument, "createdAt" | "updatedAt">> {
   try {
     return await ProductModel.create(data);
   } catch (error) {
@@ -66,10 +68,11 @@ export async function listProducts(
  */
 export async function updateProduct(
   query: FilterQuery<ProductDocument>,
-  update: UpdateQuery<ProductDocument>
-): Promise<UpdateWriteOpResult> {
+  update: UpdateQuery<ProductDocument>,
+  options: QueryOptions
+) {
   try {
-    return await ProductModel.updateOne(query, update);
+    return await ProductModel.findOneAndUpdate(query, update, options);
   } catch (error) {
     log.error(error);
     throw new Error('Unable to update product');
