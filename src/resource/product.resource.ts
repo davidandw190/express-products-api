@@ -1,6 +1,6 @@
 import { CreateProductData, UpdateProductData } from '../schema/product.schema';
 import { Request, Response } from 'express';
-import { createProduct, findProduct, updateProduct } from '../service/product.service';
+import { createProduct, deleteProduct, findProduct, updateProduct } from '../service/product.service';
 
 export async function createProductHandler(req: Request<{}, {}, CreateProductData['body']>, res: Response) {
   const userId = res.locals.user._id;
