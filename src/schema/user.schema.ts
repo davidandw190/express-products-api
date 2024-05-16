@@ -45,12 +45,6 @@ export const updateUserSchema = object({
   }),
 });
 
-/**
- * Represents the type of data expected when creating a new user.
- */
-export type CreateUserData = Omit<TypeOf<typeof createUserSchema>, 'body.passwordConfirmation'>;
 
-/**
- * Represents the type of data expected when updating a user.
- */
+export type CreateUserData = Omit<TypeOf<typeof createUserSchema>, 'body.passwordConfirmation'>;
 export type UpdateUserData = TypeOf<typeof updateUserSchema>;
