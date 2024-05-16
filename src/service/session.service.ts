@@ -1,9 +1,9 @@
 import { FilterQuery, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { SessionDocument, SessionModel } from '../model/session.model';
 import { signToken, verifyToken } from '../utils/jwt.utils';
-import { get } from 'lodash';
+
 import { findUser } from './user.service';
-import config from 'config';
+import { get } from 'lodash';
 
 export async function createSession(userId: string, userAgent: string): Promise<SessionDocument> {
   try {
@@ -41,7 +41,7 @@ export async function reIssueAccessToken({ refreshToken }: { refreshToken: strin
     const accessToken = signToken(
       { ...user, session: session._id },
       'accessTokenPrivateKey',
-      { expiresIn: config.get('ACCESS_TOKEN_TTL') }, // 25 min
+      { expiresIn: process.env.ACCESS_TOKEN_TTL }, // 25 min
     );
 
     return accessToken;

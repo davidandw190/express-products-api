@@ -1,7 +1,6 @@
 import { FilterQuery, QueryOptions, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { ProductData, ProductDocument, ProductModel } from '../model/product.model';
 
-import { P } from 'pino';
 import { log } from '../utils/logger.utils';
 
 /**

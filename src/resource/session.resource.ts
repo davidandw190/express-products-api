@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { validatePassword } from '../service/user.service';
 import { createSession, findSessions, updateSession } from '../service/session.service';
-import { signToken } from '../utils/jwt.utils';
+
 import { SessionDocument } from '../model/session.model';
-import config from 'config';
+import { signToken } from '../utils/jwt.utils';
+import { validatePassword } from '../service/user.service';
 
 export async function createUserSessionHandler(req: Request, res: Response) {
   // validate user password
@@ -18,13 +18,13 @@ export async function createUserSessionHandler(req: Request, res: Response) {
   const accessToken = signToken(
     { ...authenticatedUser, session: session._id },
     'accessTokenPrivateKey',
-    { expiresIn: config.get('ACCESS_TOKEN_TTL') }, // 25 min
+    { expiresIn:  process.env.ACCESS_TOKEN_TTL }, // 25 min
   );
 
   const refreshToken = signToken(
     { ...authenticatedUser, session: session._id },
     'refreshTokenPrivateKey',
-    { expiresIn: config.get('REFRESH_TOKEN_TTL') }, // 5 days
+    { expiresIn:  process.env.REFRESH_TOKEN_TTL }, // 5 days
   );
 
   return res.send({ accessToken, refreshToken });

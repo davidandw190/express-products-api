@@ -1,6 +1,5 @@
-import mongoose from 'mongoose';
-import config from 'config';
 import { log } from './logger.utils';
+import mongoose from 'mongoose';
 
 /**
  * Establishes a connection to the MongoDB database.
@@ -8,7 +7,7 @@ import { log } from './logger.utils';
  * @throws Error if connection to the database fails.
  */
 export async function dbConnect(): Promise<void> {
-  const dbUri = config.get<string>('DB_URI');
+  const dbUri = process.env.DB_URI || 'asd';
 
   return mongoose
     .connect(dbUri)

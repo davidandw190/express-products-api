@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+
 import { get } from 'lodash';
-import { verifyToken } from '../utils/jwt.utils';
 import { reIssueAccessToken } from '../service/session.service';
+import { verifyToken } from '../utils/jwt.utils';
 
 /**
  * Middleware to deserialize user from JWT tokens.

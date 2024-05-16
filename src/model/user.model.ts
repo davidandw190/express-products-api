@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
-import config from 'config';
 import mongoose, { Model } from 'mongoose';
+
+import bcrypt from 'bcrypt';
 
 /**
  * Represents the data fields for a user.
@@ -47,7 +47,7 @@ userSchema.pre<UserDocument>('save', async function (next) {
     return next();
   }
 
-  const saltRounds = config.get<number>('SALT_ROUND_FACTOR');
+  const saltRounds = parseInt(process.env.SALT_ROUND_FACTOR || '10'); // Default to 10 if not provided
   const salt = await bcrypt.genSalt(saltRounds);
   const hash = await bcrypt.hash(this.password, salt);
 

@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
 import { AnyZodObject, ZodError } from 'zod';
+import { NextFunction, Request, Response } from 'express';
 
 /**
  * Middleware function to validate incoming request data against a Zod schema.
