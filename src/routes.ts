@@ -1,11 +1,13 @@
 import { Express, Request, Response } from 'express';
+import { createProductHandler, deleteProductHandler, retrieveProductHandler, updateProductHandler } from './resource/product.resource';
 import { createUserHandler, deleteUserHandler, getUserHandler, updateUserHandler } from './resource/user.resource';
 import { createUserSchema, updateUserSchema } from './schema/user.schema';
-import { validate } from './middleware/validation.middleware';
 import { createUserSessionHandler, deleteUserSessionHandler, getUserSessionsHandler } from './resource/session.resource';
-import { requireUser } from './middleware/require-user.middleware';
 
-export function routes(app: Express) {
+import { requireUser } from './middleware/require-user.middleware';
+import { validate } from './middleware/validation.middleware';
+
+export default function routes(app: Express) {
   // API Versioning
   const apiVersion = '/api/v1';
 
@@ -22,6 +24,12 @@ export function routes(app: Express) {
   app.get(`${apiVersion}/users/:userId/sessions`, requireUser, getUserSessionsHandler);
   app.post(`${apiVersion}/users/:userId/sessions`, createUserSessionHandler);
   app.delete(`${apiVersion}/users/:userId/sessions`, deleteUserSessionHandler);
+
+  // Product Routes
+  app.get(`${apiVersion}/products/:productId`, retrieveProductHandler);
+  app.post(`${apiVersion}/products`, createProductHandler);
+  app.patch(`${apiVersion}/products/:productId`, updateProductHandler);
+  app.delete(`${apiVersion}/products/:productId`, deleteProductHandler);
 
   // Not Found Routes
   app.use((_req, res) => {

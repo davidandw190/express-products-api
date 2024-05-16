@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
+import { TokenKey } from '../enums/token-key.enum';
 import { get } from 'lodash';
 import { reIssueAccessToken } from '../service/session.service';
 import { verifyToken } from '../utils/jwt.utils';
@@ -18,7 +19,7 @@ export const deserializeUser = async (req: Request, res: Response, next: NextFun
     return next();
   }
 
-  const { decoded, expired } = verifyToken(accessToken, 'accessTokenPublicKey');
+  const { decoded, expired } = verifyToken(accessToken, TokenKey.AccessTokenPublicKey);
 
   if (decoded) {
     res.locals.user = decoded;
@@ -32,7 +33,7 @@ export const deserializeUser = async (req: Request, res: Response, next: NextFun
       res.setHeader('x-access-token', newAccessToken);
     }
 
-    const result = verifyToken(newAccessToken as string, 'accessTokenPublicKey');
+    const result = verifyToken(newAccessToken as string, TokenKey.AccessTokenPublicKey);
 
     res.locals.user = result.decoded;
     return next();

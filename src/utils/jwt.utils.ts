@@ -1,24 +1,27 @@
 import jwt, { SignOptions, VerifyOptions } from 'jsonwebtoken';
 
+import { TokenKey } from '../enums/token-key.enum';
 import { log } from './logger.utils';
+
+const ALGORITHM = 'RS256';
 
 /**
  * Signs a JWT token with the specified payload and private key.
  * @param payload The payload to include in the JWT token.
- * @param keyName The name of the environment variable containing the private key.
+* @param keyName The enum representing the environment variable containing the private key.
  * @param options Optional signing options.
  * @returns The signed JWT token.
  */
 export function signToken(
   payload: object,
-  keyName: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
+  keyName: TokenKey,
   options?: jwt.SignOptions,
 ): string {
   const signingKey = Buffer.from(process.env[keyName] || '', 'base64').toString('ascii');
 
   const signOptions: SignOptions = {
     ...(options || {}),
-    algorithm: 'RS256',
+    algorithm: ALGORITHM,
   };
 
   return jwt.sign(payload, signingKey, signOptions);
@@ -27,17 +30,17 @@ export function signToken(
 /**
  * Verifies a JWT token with the specified public key.
  * @param token The JWT token to verify.
- * @param keyName The name of the environment variable containing the public key.
+ * @param keyName The enum representing the environment variable containing the public key.
  * @returns An object indicating whether the token is valid, expired, and the decoded payload if valid.
  */
 export function verifyToken(
   token: string,
-  keyName: 'accessTokenPublicKey' | 'refreshTokenPublicKey',
+  keyName: TokenKey,
 ): { valid: boolean; expired: boolean; decoded: any | null } {
   const publicKey = Buffer.from(process.env[keyName] || '', 'base64').toString('ascii');
 
   const verifyOptions: VerifyOptions = {
-    algorithms: ['RS256'],
+    algorithms: [ALGORITHM],
   };
 
   try {

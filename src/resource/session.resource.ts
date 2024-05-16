@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { createSession, findSessions, updateSession } from '../service/session.service';
 
 import { SessionDocument } from '../model/session.model';
+import { TokenKey } from '../enums/token-key.enum';
 import { signToken } from '../utils/jwt.utils';
 import { validatePassword } from '../service/user.service';
 
@@ -17,13 +18,13 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
   const accessToken = signToken(
     { ...authenticatedUser, session: session._id },
-    'accessTokenPrivateKey',
+    TokenKey.AccessTokenPrivateKey,
     { expiresIn:  process.env.ACCESS_TOKEN_TTL }, // 25 min
   );
 
   const refreshToken = signToken(
     { ...authenticatedUser, session: session._id },
-    'refreshTokenPrivateKey',
+    TokenKey.RefreshTokenPrivateKey,
     { expiresIn:  process.env.REFRESH_TOKEN_TTL }, // 5 days
   );
 

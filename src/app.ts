@@ -3,7 +3,7 @@ import { deserializeUser } from './middleware/deserialization.middleware';
 import dotenv from 'dotenv';
 import express from 'express';
 import { log } from './utils/logger.utils';
-import { routes } from './routes';
+import routes from './routes';
 
 const envLoaded = dotenv.config({ path: `.env.${process.env.NODE_ENV || 'dev'}` });
 if (envLoaded.error) {

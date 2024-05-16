@@ -2,6 +2,7 @@ import { FilterQuery, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { SessionDocument, SessionModel } from '../model/session.model';
 import { signToken, verifyToken } from '../utils/jwt.utils';
 
+import { TokenKey } from '../enums/token-key.enum';
 import { findUser } from './user.service';
 import { get } from 'lodash';
 
@@ -20,7 +21,7 @@ export async function createSession(userId: string, userAgent: string): Promise<
 
 export async function reIssueAccessToken({ refreshToken }: { refreshToken: string }): Promise<string | false> {
   try {
-    const { decoded } = verifyToken(refreshToken, 'refreshTokenPublicKey');
+    const { decoded } = verifyToken(refreshToken, TokenKey.RefreshTokenPublicKey);
 
     if (!decoded || !get(decoded, 'session')) {
       return false;
@@ -40,7 +41,7 @@ export async function reIssueAccessToken({ refreshToken }: { refreshToken: strin
 
     const accessToken = signToken(
       { ...user, session: session._id },
-      'accessTokenPrivateKey',
+      TokenKey.AccessTokenPrivateKey,
       { expiresIn: process.env.ACCESS_TOKEN_TTL }, // 25 min
     );
 
