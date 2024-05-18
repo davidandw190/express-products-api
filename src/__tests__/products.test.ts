@@ -1,8 +1,10 @@
 import mongoose, { mongo } from 'mongoose';
 
 import { MongoMemoryServer } from "mongodb-memory-server";
+import { TokenKey } from '../enums/token-key.enum';
 import { createProduct } from '../service/product.service';
 import { createServer } from '../utils/server.utils';
+import { signToken } from '../utils/jwt.utils';
 import supertest from 'supertest';
 
 const app = createServer();
@@ -69,5 +71,44 @@ describe('Product API', () => {
         expect(response.body.title).toBe(product.title);
       });
     });
-  })
+  });
+
+  describe("POST /api/products", () => {
+    describe("when the user is not authenticated", () => {
+      it("should respond with status 403", async () => {
+        const response = await supertest(app).post("/api/products");
+
+        expect(response.status).toBe(403);
+      });
+    });
+
+    describe("when the user is authenticated", async () => {
+      let jwt: string;
+
+      beforeAll(() => {
+        jwt = signToken(userPayload, TokenKey.AccessTokenPrivateKey);
+      });
+
+      it("should respond with status 200 and create the product", async () => {
+        const response = await supertest(app)
+          .post("/api/products")
+          .set("Authorization", `Bearer ${jwt}`)
+          .send(productPayload);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(expect.objectContaining({
+          __v: expect.any(Number),
+          _id: expect.any(String),
+          createdAt: expect.any(String),
+          description: productPayload.description,
+          image: productPayload.image,
+          price: productPayload.price,
+          productId: expect.any(String),
+          title: productPayload.title,
+          updatedAt: expect.any(String),
+          user: expect.any(String),
+        }));
+      });
+    });
+  });
 });
